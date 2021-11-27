@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +34,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //DB 없으면 생성
+        SQLiteDatabase database;
+        database = openOrCreateDatabase("StudyPlanDB", MODE_PRIVATE, null);
+        //예외처리 필요
+        database.execSQL("create table if not exists StudyPlanTB"
+                + " ("
+                + " id integer primary key" //id 어떻게 처리할지 고민해야됨
+                + ", title varchar(20)"
+                + ", content varchar(100)"
+                + ", startDay date"
+                + ", endDay date"
+                + ", status boolean"
+                + ")");
     }
 
     /**

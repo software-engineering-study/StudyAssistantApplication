@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -45,6 +46,33 @@ public class StudyPlan{
         this.plan_status = status;
         this.plan_id = id;
     }
+
+    //for db
+    public String toDBInsertString()
+    {
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        String startDay = fm.format(plan_start_day);
+        String endDay = fm.format(plan_end_day);
+
+        return "("
+                + plan_id       //??
+                + ", "
+                + "'"
+                + plan_title
+                + "', "
+                + "'"
+                + plan_content
+                + "', "
+                + "'"
+                + startDay
+                + "', "
+                + "'"
+                + endDay
+                + "', "
+                + plan_status
+                + ")";
+    }
+
 
     // test
     public String toString()

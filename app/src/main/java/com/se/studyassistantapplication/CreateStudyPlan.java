@@ -3,6 +3,7 @@ package com.se.studyassistantapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -124,19 +125,28 @@ public class CreateStudyPlan extends AppCompatActivity {
         StudyPlan studyPlan = new StudyPlan(title.getText().toString()
                 , content.getText().toString(), startDay, endDay, false, id++);
 
-        insertStudyPlanDB();
+        insertStudyPlanDB(studyPlan);
 
-        Toast.makeText(getApplicationContext(), studyPlan.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), studyPlan.toDBInsertString(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), studyPlan.toString(), Toast.LENGTH_LONG).show();
     }
 
     /**
      * 입력받은 StudyPlan 객체의 plan_id를 입력으로
      * 하여 데이터베이스에 작성한 학습 계획 정보를
-     * 저장한다
+     * 저장한다.
+     * # 파라미터 변경 () -> (StudyPlan studyPlan)
      */
-    public void insertStudyPlanDB()
+    public void insertStudyPlanDB(StudyPlan studyPlan)
     {
+        SQLiteDatabase database;
+        String dbInsert = "insert into StudyPlanTB (id, title, content, startDay, endDay, status)  "
+                + "values "
+                + studyPlan.toDBInsertString();
 
+        database = openOrCreateDatabase("StudyPlanDB", MODE_PRIVATE, null);
+        //예외처리 필요
+        database.execSQL(dbInsert);
     }
 
 }

@@ -31,6 +31,6 @@ public class UpdateStudyPlan extends AppCompatActivity {
      */
     public void updateStudyPlanDB()
     {
-
+        
     }
 }
