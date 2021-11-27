@@ -8,9 +8,9 @@ import android.os.Bundle;
 import java.util.Date;
 
 /**
- * 학습 계획을 수정, 삭제, 상태변경하는 기능 수행
+ * 학습 계획 정보를 가지는 객첸
  */
-public class StudyPlan extends AppCompatActivity {
+public class StudyPlan{
     // 학습 계획 제목
     public String plan_title;
     // 학습 계획 내용
@@ -24,33 +24,27 @@ public class StudyPlan extends AppCompatActivity {
     // 학습 계획의 중복을 구별하기 위한 학습 계획 ID
     public int plan_id;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_study_plan);
+    /**
+     * 학습 계획 정보(학습 계획 제목, 내용, 시작
+     * 날짜, 종료 날짜, 상태, ID)를 입력으로 하여
+     * StudyPlan 객체를 생성하는 생성자 메소드
+     * 다.
+     * @param title 학습 계획 제목
+     * @param content 내용
+     * @param startday 시작 날짜
+     * @param endday 종료 날짜
+     * @param status 상태
+     * @param id ID
+     */
+    public StudyPlan(String title, String content, Date startday, Date endday, Boolean status, int id)
+    {
+        this.plan_title = title;
+        this.plan_content = content;
+        this.plan_start_day = startday;
+        this.plan_end_day = endday;
+        this.plan_status = status;
+        this.plan_id = id;
     }
-
-//    /**
-//     * 학습 계획 정보(학습 계획 제목, 내용, 시작
-//     * 날짜, 종료 날짜, 상태, ID)를 입력으로 하여
-//     * StudyPlan 객체를 생성하는 생성자 메소드
-//     * 다.
-//     * @param title 학습 계획 제목
-//     * @param content 내용
-//     * @param startday 시작 날짜
-//     * @param endday 종료 날짜
-//     * @param status 상태
-//     * @param id ID
-//     */
-//    public StudyPlan(String title, String content, Date startday, Date endday, Boolean status, int id)
-//    {
-//        this.plan_title = title;
-//        this.plan_content = content;
-//        this.plan_start_day = startday;
-//        this.plan_end_day = endday;
-//        this.plan_status = status;
-//        this.plan_id = id;
-//    }
 
     /**
      * Main 클래스의 selectStudyPlan 메소드 호출

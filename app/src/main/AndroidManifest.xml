@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyAssistantApplication">
         <activity
+            android:name=".OpenStudyPlan"
+            android:exported="false" />
+        <activity
             android:name=".UpdateStudyPlan"
             android:exported="false" />
         <activity
             android:name=".CreateStudyPlan"
-            android:exported="false" />
-        <activity
-            android:name=".StudyPlan"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
