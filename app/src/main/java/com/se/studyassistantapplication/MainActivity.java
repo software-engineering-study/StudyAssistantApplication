@@ -35,18 +35,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //DB 없으면 생성
-        SQLiteDatabase database;
-        database = openOrCreateDatabase("StudyPlanDB", MODE_PRIVATE, null);
+//        SQLiteDatabase database;
+//        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
         //예외처리 필요
-        database.execSQL("create table if not exists StudyPlanTB"
-                + " ("
-                + " id integer primary key" //id 어떻게 처리할지 고민해야됨
-                + ", title varchar(20)"
-                + ", content varchar(100)"
-                + ", startDay date"
-                + ", endDay date"
-                + ", status boolean"
-                + ")");
+//        database.execSQL("create table if not exists StudyPlanTB"
+//                + " ("
+//                + "_id integer primary key" //id 어떻게 처리할지 고민해야됨
+//                + ", title varchar(20)"
+//                + ", content varchar(100)"
+//                + ", start_day date"
+//                + ", end_day date"
+//                + ", status boolean"
+//                + ")");
     }
 
     /**
