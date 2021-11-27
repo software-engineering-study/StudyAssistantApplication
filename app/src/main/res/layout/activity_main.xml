@@ -33,6 +33,7 @@
         android:layout_marginRight="25dp"
         android:layout_marginBottom="25dp"
         android:clickable="true"
+        android:onClick="clickCreateStudyPlan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/arrow_up_float" />

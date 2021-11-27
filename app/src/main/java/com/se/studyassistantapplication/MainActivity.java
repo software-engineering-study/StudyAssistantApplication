@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
     }
 
     /**
@@ -62,9 +66,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 학습 계획 작성 액티비티를 실행한다.
+     *  #파라미터 변경함 (void) -> (View v)
      */
-    public void clickCreateStudyPlan()
-    {}
+    public void clickCreateStudyPlan(View v)
+    {
+        Intent intent = new Intent(getApplicationContext(), CreateStudyPlan.class);
+        startActivity(intent);
+    }
 
     /**
      * selectedDate 변수에 저장된 날짜를 기준으

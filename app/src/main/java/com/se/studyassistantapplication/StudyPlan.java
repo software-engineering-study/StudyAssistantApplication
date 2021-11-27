@@ -46,6 +46,17 @@ public class StudyPlan{
         this.plan_id = id;
     }
 
+    // test
+    public String toString()
+    {
+        return "title: " + plan_title + ", "
+                + "content: " + plan_content + "\n,"
+                + "sday: " + plan_start_day + ", "
+                + "eday: " + plan_end_day + ", "
+                + "status: " + plan_status + ", "
+                + "id: " + plan_id;
+    }
+
     /**
      * Main 클래스의 selectStudyPlan 메소드 호출
      * 시 호출되며, selectStudyPlan 메소드에서 전
