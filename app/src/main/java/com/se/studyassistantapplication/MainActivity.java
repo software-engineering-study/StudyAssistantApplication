@@ -11,6 +11,7 @@ import java.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -75,6 +76,17 @@ public class MainActivity extends AppCompatActivity {
         study_plan = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, study_plan);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                StudyPlan studyPlan = adapter.getItem(i);
+
+                Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
+                intent.putExtra("id", studyPlan.plan_id);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             }
             boolean status = Boolean.parseBoolean(cursor.getString(5));
 
-            study_plan.add(new StudyPlan(title, content, startDay, endDay, status));
+            study_plan.add(new StudyPlan(id, title, content, startDay, endDay, status));
 //            Log.e(this.getClass().getName(), startDay.toString() + endDay.toString() + status);
             adapter.notifyDataSetChanged();
 //            Toast.makeText(getApplicationContext(), startDay.toString() + endDay.toString() + status, Toast.LENGTH_SHORT).show();
