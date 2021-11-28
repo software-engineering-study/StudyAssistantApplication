@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -25,7 +26,6 @@ public class CreateStudyPlan extends AppCompatActivity {
 
     // #임의로 생성
     public static int id = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +112,7 @@ public class CreateStudyPlan extends AppCompatActivity {
         startDayTv = findViewById(R.id.startDay);
         endDayTv = findViewById(R.id.endDay);
 
-        SimpleDateFormat fm = new SimpleDateFormat("yy-MM-dd");
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         Date startDay = null;
         Date endDay = null;
         try {
@@ -120,6 +120,7 @@ public class CreateStudyPlan extends AppCompatActivity {
             endDay = fm.parse(endDayTv.getText().toString());
         }catch (ParseException e){
             e.printStackTrace();
+            Log.e(this.getClass().getName(), "error");
         }
 
         StudyPlan studyPlan = new StudyPlan(title.getText().toString()
@@ -128,11 +129,9 @@ public class CreateStudyPlan extends AppCompatActivity {
         SQLiteDatabase database;
         database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
 
-//        database.execSQL("insert into study_plan_tb values (31, 't', 'c', '2011-11-11', '2011-11-11', TRUE)");
         insertStudyPlanDB(studyPlan);
 
         Toast.makeText(getApplicationContext(), studyPlan.toDBInsertString(), Toast.LENGTH_LONG).show();
-//        Toast.makeText(getApplicationContext(), studyPlan.toString(), Toast.LENGTH_LONG).show();
     }
 
     /**
