@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.Date;
  * 학습 계획을 열람, 수정, 삭제, 상태변경하는 기능 수행
  */
 public class OpenStudyPlan extends AppCompatActivity {
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,15 @@ public class OpenStudyPlan extends AppCompatActivity {
         int id = intent.getExtras().getInt("id");
 
         showStudyPlan(id);
+
+        Button btn_status = findViewById(R.id.statusBtn);
+        btn_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setStudyPlanStatus();
+                updatePlanStatusDB(id);
+            }
+        });
     }
 
     /**
@@ -70,7 +82,7 @@ public class OpenStudyPlan extends AppCompatActivity {
         tv_planContent.setText(studyPlan.plan_content);
         tv_startDay.setText(fm.format(studyPlan.plan_start_day));
         tv_endDay.setText(fm.format(studyPlan.plan_end_day));
-        btn_status.setText(Boolean.toString(studyPlan.plan_status));
+        btn_status.setText(studyPlan.plan_status ? "TRUE" : "FALSE");
     }
 
     /**
@@ -98,7 +110,14 @@ public class OpenStudyPlan extends AppCompatActivity {
      */
     public void setStudyPlanStatus()
     {
-
+        Button btn_status = findViewById(R.id.statusBtn);
+        if(btn_status.getText().equals("FALSE")){
+            btn_status.setText("TRUE");
+            Toast.makeText(getApplicationContext(), "to true", Toast.LENGTH_SHORT).show();
+        }else{
+            btn_status.setText("FALSE");
+            Toast.makeText(getApplicationContext(), "to false", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -113,10 +132,21 @@ public class OpenStudyPlan extends AppCompatActivity {
      * 입력받은 StudyPlan 객체의 plan_id를 통하
      * 여 데이터베이스에서 학습 계획을 조회하여
      * 학습 계획 상태를 변경한다.
+     * # 파라미터 변경 (StudyPlan study_plan) -> (int id)
      */
-    public void updatePlanStatusDB()
+    public void updatePlanStatusDB(int id)
     {
+        SQLiteDatabase database;
+        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
 
+        Button btn_status = findViewById(R.id.statusBtn);
+        if(btn_status.getText().equals("FALSE")){
+            //update study_plan_tb set status='false' where _id = id
+            database.execSQL("update study_plan_tb set status='false' where _id = " + id);
+        }else{
+            //update study_plan_tb set status='true' where _id = id
+            database.execSQL("update study_plan_tb set status='true' where _id = " + id);
+        }
     }
 
     /**
@@ -124,7 +154,7 @@ public class OpenStudyPlan extends AppCompatActivity {
      * 여 해당 학습 계획 정보를 데이터베이스에서
      * 삭제한다.
      */
-    public void deleteStudyPlanDB()
+    public void deleteStudyPlanDB(StudyPlan study_plan)
     {}
     
 }
