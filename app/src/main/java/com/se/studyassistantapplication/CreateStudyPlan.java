@@ -123,24 +123,15 @@ public class CreateStudyPlan extends AppCompatActivity {
         }
 
         StudyPlan studyPlan = new StudyPlan(title.getText().toString()
-                , content.getText().toString(), startDay, endDay, false, id++);
+                , content.getText().toString(), startDay, endDay, false);
 
         SQLiteDatabase database;
         database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
 
-        database.execSQL("create table if not exists study_plan_tb"
-                + " ("
-                + "_id integer primary key" //id 어떻게 처리할지 고민해야됨
-                + ", title text"
-                + ", content text"
-                + ", start_day date"
-                + ", end_day date"
-                + ", status boolean"
-                + ")");
-        database.execSQL("insert into study_plan_tb values (30, 't', 'c', '2011-11-11', '2011-11-11', 'TRUE')");
-//        insertStudyPlanDB(studyPlan);
+//        database.execSQL("insert into study_plan_tb values (31, 't', 'c', '2011-11-11', '2011-11-11', TRUE)");
+        insertStudyPlanDB(studyPlan);
 
-//        Toast.makeText(getApplicationContext(), studyPlan.toDBInsertString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), studyPlan.toDBInsertString(), Toast.LENGTH_LONG).show();
 //        Toast.makeText(getApplicationContext(), studyPlan.toString(), Toast.LENGTH_LONG).show();
     }
 
@@ -153,19 +144,14 @@ public class CreateStudyPlan extends AppCompatActivity {
     public void insertStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        String dbInsert = "insert into StudyPlanTB (id, title, content, startDay, endDay, status)  "
+        String dbInsert = "insert into study_plan_tb (title, content, start_day, end_day, status)  "
                 + "values "
                 + studyPlan.toDBInsertString();
 
-        database = openOrCreateDatabase("StudyPlanDB", MODE_PRIVATE, null);
+        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
         //예외처리 필요
+
+        database.execSQL(dbInsert);
         Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
-
-        try{
-            database.execSQL("insert into StudyPlanTB values (3, 't', 'c', '2011-11-11', '2011-11-11', TRUE)");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
-
 }

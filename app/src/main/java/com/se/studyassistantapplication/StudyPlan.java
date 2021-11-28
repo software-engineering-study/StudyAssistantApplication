@@ -35,16 +35,15 @@ public class StudyPlan{
      * @param startday 시작 날짜
      * @param endday 종료 날짜
      * @param status 상태
-     * @param id ID
      */
-    public StudyPlan(String title, String content, Date startday, Date endday, Boolean status, int id)
+    public StudyPlan(String title, String content, Date startday, Date endday, Boolean status)
     {
         this.plan_title = title;
         this.plan_content = content;
         this.plan_start_day = startday;
         this.plan_end_day = endday;
         this.plan_status = status;
-        this.plan_id = id;
+//        this.plan_id = id;
     }
 
     //for db
@@ -55,8 +54,6 @@ public class StudyPlan{
         String endDay = fm.format(plan_end_day);
 
         return "("
-                + plan_id       //??
-                + ", "
                 + "'"
                 + plan_title
                 + "', "
@@ -69,20 +66,48 @@ public class StudyPlan{
                 + "'"
                 + endDay
                 + "', "
+                + "'"
                 + plan_status
+                + "'"
                 + ")";
+
+//        return "("
+//                + plan_id       //??
+//                + ", "
+//                + "'"
+//                + plan_title
+//                + "', "
+//                + "'"
+//                + plan_content
+//                + "', "
+//                + "'"
+//                + startDay
+//                + "', "
+//                + "'"
+//                + endDay
+//                + "', "
+//                + "'"
+//                + plan_status
+//                + "'"
+//                + ")";
     }
 
 
     // test
     public String toString()
     {
+//        return "title: " + plan_title + ", "
+//                + "content: " + plan_content + "\n,"
+//                + "sday: " + plan_start_day + ", "
+//                + "eday: " + plan_end_day + ", "
+//                + "status: " + plan_status + ", "
+//                + "id: " + plan_id;
+
         return "title: " + plan_title + ", "
                 + "content: " + plan_content + "\n,"
                 + "sday: " + plan_start_day + ", "
                 + "eday: " + plan_end_day + ", "
-                + "status: " + plan_status + ", "
-                + "id: " + plan_id;
+                + "status: " + plan_status;
     }
 
     /**
