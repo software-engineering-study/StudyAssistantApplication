@@ -84,9 +84,21 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
                 intent.putExtra("id", studyPlan.plan_id);
-                startActivity(intent);
+                startActivityForResult(intent, 100);
             }
         });
+    }
+
+    // CalculateActivity 에서 처리된 결과를 받는 메소드
+    // 처리된 결과 코드 (resultCode) 가 RESULT_OK 이면 requestCode 를 판별해 결과 처리를 진행한다.
+    // CalculateActivity 에서 처리 결과가 담겨온 데이터를 TextView 에 보여준다.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            showStudyPlanList(selectedDate);
+            Toast.makeText(getApplicationContext(), "onAcitivyResult called", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -163,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     public void clickCreateStudyPlan(View v)
     {
         Intent intent = new Intent(getApplicationContext(), CreateStudyPlan.class);
-        startActivity(intent);
+        startActivityForResult(intent, 200);
     }
 
     /**

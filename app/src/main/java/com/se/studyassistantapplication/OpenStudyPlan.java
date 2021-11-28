@@ -38,6 +38,16 @@ public class OpenStudyPlan extends AppCompatActivity {
                 updatePlanStatusDB(id);
             }
         });
+
+        Button btn_delete = findViewById(R.id.deleteBtn);
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteStudyPlanDB(id);
+                setResult(RESULT_OK, new Intent());
+                finish();
+            }
+        });
     }
 
     /**
@@ -153,8 +163,15 @@ public class OpenStudyPlan extends AppCompatActivity {
      * 입력받은 StudyPlan 객체의 plan_id를 통하
      * 여 해당 학습 계획 정보를 데이터베이스에서
      * 삭제한다.
+     * #파라미터 변경 (StudyPlan study_plan) -> (int id)
      */
-    public void deleteStudyPlanDB(StudyPlan study_plan)
-    {}
+    public void deleteStudyPlanDB(int id)
+    {
+        SQLiteDatabase database;
+        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+
+        //delete from study_plan_tb where _id = id
+        database.execSQL("delete from study_plan_tb where _id = " + id);
+    }
     
 }

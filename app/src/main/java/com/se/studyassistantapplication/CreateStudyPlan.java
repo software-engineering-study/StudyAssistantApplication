@@ -3,6 +3,7 @@ package com.se.studyassistantapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,11 +59,13 @@ public class CreateStudyPlan extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton button = findViewById(R.id.saveButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton btn_save = findViewById(R.id.saveButton);
+        btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createStudyPlan();
+                setResult(RESULT_OK, new Intent());
+                finish();
             }
         });
     }
