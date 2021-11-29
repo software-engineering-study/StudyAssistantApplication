@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,7 +13,7 @@ import java.util.Date;
 /**
  * 학습 계획 정보를 가지는 객첸
  */
-public class StudyPlan{
+public class StudyPlan implements Parcelable {
     // 학습 계획 제목
     public String plan_title;
     // 학습 계획 내용
@@ -55,6 +57,38 @@ public class StudyPlan{
         this.plan_start_day = startday;
         this.plan_end_day = endday;
         this.plan_status = status;
+    }
+
+    //Parcel 객체에서 읽기
+    public StudyPlan(Parcel src) {
+        this.plan_id = src.readInt();
+        this.plan_title = src.readString();
+        this.plan_content = src.readString();
+        //out.writeLong(date_object.getTime());
+        this.plan_start_day = new Date(src.readLong());
+        this.plan_end_day = new Date(src.readLong());
+        // api레벨 문제로 문자열로 변환하였다가 받음
+        this.plan_status = src.readString().equalsIgnoreCase("true");
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        public StudyPlan createFromParcel(Parcel in){
+            return new StudyPlan(in);
+        }
+        public StudyPlan[] newArray(int size){
+            return new StudyPlan[size];
+        }
+    };
+    public int describeContents(){
+        return 0;
+    }
+    public void writeToParcel(Parcel dest, int flags){
+        dest.writeInt(this.plan_id);
+        dest.writeString(this.plan_title);
+        dest.writeString(this.plan_content);
+        dest.writeLong(this.plan_start_day.getTime());
+        dest.writeLong(this.plan_end_day.getTime());
+        dest.writeString(Boolean.toString(this.plan_status));
     }
 
     //for db

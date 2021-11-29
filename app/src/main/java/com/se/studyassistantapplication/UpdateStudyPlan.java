@@ -2,7 +2,14 @@ package com.se.studyassistantapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
 
 public class UpdateStudyPlan extends AppCompatActivity {
     // 수정할 학습 계획 객체
@@ -12,6 +19,14 @@ public class UpdateStudyPlan extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_study_plan);
+        
+        //StudyPlan 객체 받아오기
+        Intent intent = getIntent();
+        int id = intent.getExtras().getInt("id");
+
+        // 날짜를 출력하는 텍스트뷰에 지정된 날짜 설정.
+        TextView startDay = findViewById(R.id.startDay);
+        TextView endDay = findViewById(R.id.endDay);
     }
 
     /**
@@ -21,7 +36,7 @@ public class UpdateStudyPlan extends AppCompatActivity {
      */
     public void updateStudyPlan()
     {
-
+        
     }
 
     /**

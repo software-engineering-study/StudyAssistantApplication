@@ -1,5 +1,6 @@
 package com.se.studyassistantapplication;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,7 +19,8 @@ import java.util.Date;
  * 학습 계획을 열람, 수정, 삭제, 상태변경하는 기능 수행
  */
 public class OpenStudyPlan extends AppCompatActivity {
-    
+    // 수정할 학습 계획 객체
+    public StudyPlan study_plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,17 @@ public class OpenStudyPlan extends AppCompatActivity {
             public void onClick(View view) {
                 setStudyPlanStatus();
                 updatePlanStatusDB(id);
+            }
+        });
+
+        Button btn_modify = findViewById(R.id.modifyBtn);
+        btn_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), UpdateStudyPlan.class);
+
+                intent.putExtra("StudyPlan", );
+                startActivityForResult(intent, 300);
             }
         });
 
