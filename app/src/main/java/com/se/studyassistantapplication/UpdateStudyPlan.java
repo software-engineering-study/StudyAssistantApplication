@@ -134,7 +134,7 @@ public class UpdateStudyPlan extends AppCompatActivity {
         }
 
         StudyPlan updatedStudyPlan = new StudyPlan(study_plan.plan_id, title.getText().toString()
-                , content.getText().toString(), startDay, endDay, false);
+                , content.getText().toString(), startDay, endDay, study_plan.plan_status);
 
         updateStudyPlanDB(updatedStudyPlan);
     }
