@@ -91,6 +91,23 @@ public class StudyPlan implements Parcelable {
         dest.writeString(Boolean.toString(this.plan_status));
     }
 
+    public String toDBUpdateString()
+    {
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        String startDay = fm.format(plan_start_day);
+        String endDay = fm.format(plan_end_day);
+
+        return " title='" +
+                plan_title +
+                "', content='" +
+                plan_content +
+                "', start_day='" +
+                startDay +
+                "', end_day='" +
+                endDay +
+                "' ";
+    }
+
     //for db
     public String toDBInsertString()
     {

@@ -63,6 +63,16 @@ public class OpenStudyPlan extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            setResult(RESULT_OK, new Intent());
+            finish();
+            Toast.makeText(getApplicationContext(), "onAcitivyResult called", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /**
      * Main 클래스의 selectStudyPlan 메소드 호출
      * 시 호출되며, selectStudyPlan 메소드에서 전
@@ -92,7 +102,7 @@ public class OpenStudyPlan extends AppCompatActivity {
                 e.printStackTrace();
             }
             boolean status = Boolean.parseBoolean(cursor.getString(5));
-            study_plan = new StudyPlan(title, content, startDay, endDay, status);
+            study_plan = new StudyPlan(id, title, content, startDay, endDay, status);
         }
 
         TextView tv_planTitle = findViewById(R.id.planTitle);
