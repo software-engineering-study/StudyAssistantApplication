@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,7 +23,11 @@ public class UpdateStudyPlan extends AppCompatActivity {
         
         //StudyPlan 객체 받아오기
         Intent intent = getIntent();
-        int id = intent.getExtras().getInt("id");
+        //예외처리 필요
+        Bundle bundle = intent.getExtras();
+        study_plan = bundle.getParcelable("StudyPlan");
+
+        Toast.makeText(this, study_plan.toString(), Toast.LENGTH_SHORT).show();
 
         // 날짜를 출력하는 텍스트뷰에 지정된 날짜 설정.
         TextView startDay = findViewById(R.id.startDay);

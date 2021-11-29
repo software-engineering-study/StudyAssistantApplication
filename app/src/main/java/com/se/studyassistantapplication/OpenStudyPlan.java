@@ -42,12 +42,12 @@ public class OpenStudyPlan extends AppCompatActivity {
         });
 
         Button btn_modify = findViewById(R.id.modifyBtn);
-        btn_status.setOnClickListener(new View.OnClickListener() {
+        btn_modify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), UpdateStudyPlan.class);
 
-                intent.putExtra("StudyPlan", );
+                intent.putExtra("StudyPlan", study_plan);
                 startActivityForResult(intent, 300);
             }
         });
@@ -75,7 +75,7 @@ public class OpenStudyPlan extends AppCompatActivity {
     public void showStudyPlan(int id)
     {
         Cursor cursor = showStudyPlanDB(id);
-        StudyPlan studyPlan = null;
+        study_plan = null;
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
 
         while(cursor.moveToNext())
@@ -92,7 +92,7 @@ public class OpenStudyPlan extends AppCompatActivity {
                 e.printStackTrace();
             }
             boolean status = Boolean.parseBoolean(cursor.getString(5));
-            studyPlan = new StudyPlan(title, content, startDay, endDay, status);
+            study_plan = new StudyPlan(title, content, startDay, endDay, status);
         }
 
         TextView tv_planTitle = findViewById(R.id.planTitle);
@@ -101,11 +101,11 @@ public class OpenStudyPlan extends AppCompatActivity {
         TextView tv_endDay = findViewById(R.id.endDay);
         Button btn_status = findViewById(R.id.statusBtn);
 
-        tv_planTitle.setText(studyPlan.plan_title);
-        tv_planContent.setText(studyPlan.plan_content);
-        tv_startDay.setText(fm.format(studyPlan.plan_start_day));
-        tv_endDay.setText(fm.format(studyPlan.plan_end_day));
-        btn_status.setText(studyPlan.plan_status ? "TRUE" : "FALSE");
+        tv_planTitle.setText(study_plan.plan_title);
+        tv_planContent.setText(study_plan.plan_content);
+        tv_startDay.setText(fm.format(study_plan.plan_start_day));
+        tv_endDay.setText(fm.format(study_plan.plan_end_day));
+        btn_status.setText(study_plan.plan_status ? "TRUE" : "FALSE");
     }
 
     /**
