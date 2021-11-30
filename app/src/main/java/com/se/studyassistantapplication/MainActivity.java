@@ -30,61 +30,84 @@ import java.util.Date;
  * 학습 계획 정보를 StudyPlan 클래스로 전달하는 역할을 한다.
  */
 public class MainActivity extends AppCompatActivity {
-    // Calendar API를 이용하기 위한 객체  #CalendarView로 임시로 바꿈
-//    public Calendar calendar;
-    public CalendarView calendarView;
+    // Calendar API를 이용하기 위한 객체
+    public Calendar calendar;
     // 학습 계획 정보(학습 계획 제목, 학습 계획 내용, 학습
     // 시작 날짜와 종료 날짜, 학습 계획 상태)
     public ArrayList<StudyPlan> study_plan;
     // 사용자가 학습 캘린더에서 선택한 날짜(기본 설정값은
     // 현재 날짜)
-    public Date selectedDate;
+    public Date selected_date;
 
-    //
-    ArrayAdapter<StudyPlan> adapter;
+    // 데이터베이스명 # 새로 추가
+    public static final String DB_NAME = "study_plan_db";
+
+    // 테이블명 # 새로 추가
+    public static final String TB_NAME = "study_plan_tb";
+    
+    // reqeust 코드 # 새로 추가
+    public static final int REQUEST_CODE_OPENSTUDYPLAN = 100;
+    public static final int REQUEST_CODE_CREATESTUDYPLAN = 200;
+
+    // study_plan과 리스트뷰를 연결하기 위한 어댑터 # 새로 추가
+    public ArrayAdapter<StudyPlan> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        calendarView = findViewById(R.id.calendarView);
-        ListView listView = findViewById(R.id.planList);
+        CalendarView cv_calendarView = findViewById(R.id.calendarView);
+        ListView lv_listView = findViewById(R.id.planList);
+        FloatingActionButton fab_newPlan = findViewById(R.id.newPlan);
 
         //DB 없으면 생성
         SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
-        database.execSQL("create table if not exists study_plan_tb"
+        // CREATE TABLE IF NOT EXISTS study_plan_tb (_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT
+        // , start_day DATE, end_day DATE, status BOOLEAN)
+        database.execSQL("CREATE TABLE IF NOT EXISTS " +
+                TB_NAME
                 + " ("
-                + "_id integer primary key autoincrement" //id 어떻게 처리할지 고민해야됨
-                + ", title text"
-                + ", content text"
-                + ", start_day date"
-                + ", end_day date"
-                + ", status boolean"
+                + "_id INTEGER PRIMARY KEY AUTOINCREMENT" //id 어떻게 처리할지 고민해야됨
+                + ", title TEXT"
+                + ", content TEXT"
+                + ", start_day DATE"
+                + ", end_day DATE"
+                + ", status BOOLEAN"
                 + ")");
-
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        
+        // 캘린더에서 날짜 변경시
+        cv_calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
                 selectDate(year, month, day);
-                showStudyPlanList(selectedDate);
+                showStudyPlanList(selected_date);
             }
         });
 
         study_plan = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, study_plan);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv_listView.setAdapter(adapter);
+        
+        // 리스트뷰에서 항목 선택시
+        lv_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 StudyPlan studyPlan = adapter.getItem(i);
 
                 Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
                 intent.putExtra("id", studyPlan.plan_id);
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, REQUEST_CODE_OPENSTUDYPLAN);
+            }
+        });
+
+        // 새 계획 작성 버튼
+        fab_newPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickCreateStudyPlan();
             }
         });
     }
@@ -96,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
-            showStudyPlanList(selectedDate);
+            showStudyPlanList(selected_date);
             Toast.makeText(getApplicationContext(), "onAcitivyResult called", Toast.LENGTH_SHORT).show();
         }
     }
@@ -118,19 +141,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void selectDate(int year, int month, int day)
     {
-        Calendar c = Calendar.getInstance();
-        c.set(year, month, day, 0, 0);
-        selectedDate = c.getTime();
+        calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 0, 0);
+        selected_date = calendar.getTime();
 
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-//        Log.e(this.getClass().getName(), fm.format(selectedDate));
     }
-
-    // 캘린더뷰 날짜 변경시 showStudyPlanList 호출
 
     /**
      * selectedDate 변수에 저장된 날짜를 기준으
      * 로 학습 계획 목록을 보여준다.
+     * 캘린더뷰 날짜 변경시 showStudyPlanList이 호출된다.
      * # 멤버변수로 selectedDate 가지고 있는데 파라미터에 쓰는 이유는 뭘까?
      */
     public void showStudyPlanList(Date selectedDate)
@@ -139,11 +160,13 @@ public class MainActivity extends AppCompatActivity {
 //        if(cursor != null)
 //            Log.e(this.getClass().getName(), "not null");
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-
-        int recordCount = cursor.getCount();
+        
+        //리스트 초기화
         study_plan.clear();
         adapter.notifyDataSetChanged();
 //        Toast.makeText(getApplicationContext(), Integer.toString(recordCount), Toast.LENGTH_SHORT).show();
+
+        int recordCount = cursor.getCount();
         for(int i = 0; i < recordCount; i++){
             cursor.moveToNext();
 
@@ -170,12 +193,11 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 학습 계획 작성 액티비티를 실행한다.
-     *  #파라미터 변경함 (void) -> (View v)
      */
-    public void clickCreateStudyPlan(View v)
+    public void clickCreateStudyPlan()
     {
         Intent intent = new Intent(getApplicationContext(), CreateStudyPlan.class);
-        startActivityForResult(intent, 200);
+        startActivityForResult(intent, REQUEST_CODE_CREATESTUDYPLAN);
     }
 
     /**
@@ -188,20 +210,21 @@ public class MainActivity extends AppCompatActivity {
     public Cursor selectStudyPlanListDB(Date selectedDate)
     {
         SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         String currDate = fm.format(selectedDate);
 
-        //select * from study_plan_tb where start_day <= 'currDate' and end_day >= 'currDate'
-        Cursor cursor = database.rawQuery("select * from study_plan_tb where start_day <= '" +
+        //SELECT * FROM study_plan_tb WHERE start_day <= 'currDate' AND end_day >= 'currDate'
+        Cursor cursor = database.rawQuery("SELECT * FROM " +
+                MainActivity.TB_NAME +
+                " WHERE start_day <= '" +
                 currDate +
-                "' and end_day >= '" +
+                "' AND end_day >= '" +
                 currDate +
                 "'", null);
 
 //        Toast.makeText(getApplicationContext(), Integer.toString(cursor.getCount()) , Toast.LENGTH_SHORT).show();
-
         return cursor;
     }
 
@@ -221,7 +244,4 @@ public class MainActivity extends AppCompatActivity {
 //    {
 //
 //    }
-
-
-
 }
