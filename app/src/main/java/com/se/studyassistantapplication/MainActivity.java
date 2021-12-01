@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // reqeust 코드 # 새로 추가
     public static final int REQUEST_CODE_OPENSTUDYPLAN = 100;
     public static final int REQUEST_CODE_CREATESTUDYPLAN = 200;
+    public static final int REQUEST_CODE_UPDATESTUDYPLAN = 300;
 
     // study_plan과 리스트뷰를 연결하기 위한 어댑터 # 새로 추가
     public ArrayAdapter<StudyPlan> adapter;
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 StudyPlan studyPlan = adapter.getItem(i);
 
                 Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
-                intent.putExtra("id", studyPlan.plan_id);
+                intent.putExtra("StudyPlan", studyPlan);
                 startActivityForResult(intent, REQUEST_CODE_OPENSTUDYPLAN);
             }
         });
@@ -144,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         calendar.set(year, month, day, 0, 0);
         selected_date = calendar.getTime();
-
-        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     /**

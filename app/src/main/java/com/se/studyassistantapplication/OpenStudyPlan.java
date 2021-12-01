@@ -28,16 +28,17 @@ public class OpenStudyPlan extends AppCompatActivity {
         setContentView(R.layout.activity_open_study_plan);
 
         Intent intent = getIntent();
-        int id = intent.getExtras().getInt("id");
+        Bundle bundle = intent.getExtras();
+        study_plan = bundle.getParcelable("StudyPlan");
 
-        showStudyPlan(id);
+        showStudyPlan(study_plan.plan_id);
 
         Button btn_status = findViewById(R.id.statusBtn);
         btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setStudyPlanStatus();
-                updatePlanStatusDB(id);
+                updatePlanStatusDB(study_plan.plan_id);
             }
         });
 
@@ -48,7 +49,7 @@ public class OpenStudyPlan extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), UpdateStudyPlan.class);
 
                 intent.putExtra("StudyPlan", study_plan);
-                startActivityForResult(intent, 300);
+                startActivityForResult(intent, MainActivity.REQUEST_CODE_UPDATESTUDYPLAN);
             }
         });
 
@@ -56,7 +57,7 @@ public class OpenStudyPlan extends AppCompatActivity {
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteStudyPlanDB(id);
+                deleteStudyPlanDB(study_plan.plan_id);
                 setResult(RESULT_OK, new Intent());
                 finish();
             }
