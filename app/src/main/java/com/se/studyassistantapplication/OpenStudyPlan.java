@@ -19,7 +19,7 @@ import java.util.Date;
  * 학습 계획을 열람, 수정, 삭제, 상태변경하는 기능 수행
  */
 public class OpenStudyPlan extends AppCompatActivity {
-    // 수정할 학습 계획 객체
+    // 열람할 학습 계획 객체
     public StudyPlan study_plan;
 
     @Override
@@ -31,45 +31,47 @@ public class OpenStudyPlan extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         study_plan = bundle.getParcelable("StudyPlan");
 
-        showStudyPlan(study_plan.plan_id);
-
+        showStudyPlan();
+        
+        // 상태 버튼
         Button btn_status = findViewById(R.id.statusBtn);
         btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setStudyPlanStatus();
-                updatePlanStatusDB(study_plan.plan_id);
+                updatePlanStatusDB(study_plan);
             }
         });
-
+        
+        // 수정 버튼
         Button btn_modify = findViewById(R.id.modifyBtn);
         btn_modify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), UpdateStudyPlan.class);
-
-                intent.putExtra("StudyPlan", study_plan);
-                startActivityForResult(intent, MainActivity.REQUEST_CODE_UPDATESTUDYPLAN);
+                clickUpdateStudyPlan();
             }
         });
-
+        
+        // 삭제 버튼
         Button btn_delete = findViewById(R.id.deleteBtn);
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteStudyPlanDB(study_plan.plan_id);
+                deleteStudyPlanDB(study_plan);
                 setResult(RESULT_OK, new Intent());
                 finish();
             }
         });
     }
-
+    
+    // UpdateStudyPlan 액티비티로부터 돌아오는 경우
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             setResult(RESULT_OK, new Intent());
             finish();
+            // for test
             Toast.makeText(getApplicationContext(), "onAcitivyResult called", Toast.LENGTH_SHORT).show();
         }
     }
@@ -81,12 +83,10 @@ public class OpenStudyPlan extends AppCompatActivity {
      * PlanDB 메소드 호출을 통해 학습 계획을 조
      * 회하여 학습 계획 열람 기능을 수행한다.
      * -> 메서드 설명 변경해야함
-     * # () -> (int id)
      */
-    public void showStudyPlan(int id)
+    public void showStudyPlan()
     {
-        Cursor cursor = showStudyPlanDB(id);
-        study_plan = null;
+        Cursor cursor = showStudyPlanDB(study_plan);
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
 
         while(cursor.moveToNext())
@@ -103,7 +103,6 @@ public class OpenStudyPlan extends AppCompatActivity {
                 e.printStackTrace();
             }
             boolean status = Boolean.parseBoolean(cursor.getString(5));
-            study_plan = new StudyPlan(id, title, content, startDay, endDay, status);
         }
 
         TextView tv_planTitle = findViewById(R.id.planTitle);
@@ -124,16 +123,16 @@ public class OpenStudyPlan extends AppCompatActivity {
      * 여 해당 변수의 정보로 데이터베이스에서 학
      * 습 계획을 조회한 후에 Cursor 형태로 결과
      * 를 반환한다.
-     * #@param study_plan StudyPlan 객체 -> id로 변경 #####
+     * @param studyPlan StudyPlan 객체
      * @return 데이터베이스에서 조회한 학습 계획
      */
-    public Cursor showStudyPlanDB(int id)
+    public Cursor showStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
-        //select * from study_plan_tb where _id = id
-        Cursor cursor = database.rawQuery("select * from study_plan_tb where _id = " + id, null);
+        //SELECT * FROM study_plan_tb WHERE _id = id
+        Cursor cursor = database.rawQuery("SELECT * FROM study_plan_tb WHERE _id = " + studyPlan.plan_id, null);
         return cursor;
     }
 
@@ -159,27 +158,30 @@ public class OpenStudyPlan extends AppCompatActivity {
      */
     public void clickUpdateStudyPlan()
     {
+        Intent intent = new Intent(getApplicationContext(), UpdateStudyPlan.class);
 
+        intent.putExtra("StudyPlan", study_plan);
+        startActivityForResult(intent, MainActivity.REQUEST_CODE_UPDATESTUDYPLAN);
     }
 
     /**
      * 입력받은 StudyPlan 객체의 plan_id를 통하
      * 여 데이터베이스에서 학습 계획을 조회하여
      * 학습 계획 상태를 변경한다.
-     * # 파라미터 변경 (StudyPlan study_plan) -> (int id)
+     * @param studyPlan 상태를 변경할 StudyPlan 객체
      */
-    public void updatePlanStatusDB(int id)
+    public void updatePlanStatusDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
         Button btn_status = findViewById(R.id.statusBtn);
         if(btn_status.getText().equals("FALSE")){
-            //update study_plan_tb set status='false' where _id = id
-            database.execSQL("update study_plan_tb set status='false' where _id = " + id);
+            //UPDATE study_plan_tb SET status='false' WHERE _id = id
+            database.execSQL("UPDATE study_plan_tb SET status='false' WHERE _id = " + studyPlan.plan_id);
         }else{
-            //update study_plan_tb set status='true' where _id = id
-            database.execSQL("update study_plan_tb set status='true' where _id = " + id);
+            //UPDATE study_plan_tb SET status='true' WHERE _id = id
+            database.execSQL("UPDATE study_plan_tb SET status='true' WHERE _id = " + studyPlan.plan_id);
         }
     }
 
@@ -187,15 +189,15 @@ public class OpenStudyPlan extends AppCompatActivity {
      * 입력받은 StudyPlan 객체의 plan_id를 통하
      * 여 해당 학습 계획 정보를 데이터베이스에서
      * 삭제한다.
-     * #파라미터 변경 (StudyPlan study_plan) -> (int id)
+     * @param studyPlan 삭제할 StudyPlan 객체
      */
-    public void deleteStudyPlanDB(int id)
+    public void deleteStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
-        //delete from study_plan_tb where _id = id
-        database.execSQL("delete from study_plan_tb where _id = " + id);
+        //DELETE FROM study_plan_tb WHERE _id = id
+        database.execSQL("DELETE FROM study_plan_tb WHERE _id = " + studyPlan.plan_id);
     }
     
 }
