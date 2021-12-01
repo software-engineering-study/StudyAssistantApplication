@@ -133,8 +133,8 @@ public class UpdateStudyPlan extends AppCompatActivity {
             Log.e(this.getClass().getName(), "error");
         }
 
-        StudyPlan updatedStudyPlan = new StudyPlan(study_plan.plan_id, title.getText().toString()
-                , content.getText().toString(), startDay, endDay, study_plan.plan_status);
+        StudyPlan updatedStudyPlan = new StudyPlan(title.getText().toString()
+                , content.getText().toString(), startDay, endDay, study_plan.plan_status, study_plan.plan_id);
 
         updateStudyPlanDB(updatedStudyPlan);
     }
@@ -143,20 +143,16 @@ public class UpdateStudyPlan extends AppCompatActivity {
      * 생성한 StudyPlan 객체의 plan_id를 입력으로 하
      * 여 데이터베이스에 작성한 학습 계획 정보를 수
      * 정한다.
-     * @param study_plan 데이터베이스에 저장할 객체
+     * @param studyPlan 데이터베이스에 저장할 객체
      */
-    public void updateStudyPlanDB(StudyPlan study_plan)
+    public void updateStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        String dbUpdateString = "UPDATE study_plan_tb SET "
-                + study_plan.toDBUpdateString()
-                + " where _id = " +
-                study_plan.plan_id;
 
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
         //예외처리 필요
 
-        database.execSQL(dbUpdateString);
-        Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
+        database.execSQL(studyPlan.toDBUpdateString());
+        Toast.makeText(getApplicationContext(), studyPlan.toDBUpdateString(), Toast.LENGTH_SHORT).show();
     }
 }

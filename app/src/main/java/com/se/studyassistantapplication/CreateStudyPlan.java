@@ -146,14 +146,11 @@ public class CreateStudyPlan extends AppCompatActivity {
     public void insertStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
-        String dbInsert = "insert into study_plan_tb (title, content, start_day, end_day, status)  "
-                + "values "
-                + studyPlan.toDBInsertString();
 
         database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
         //예외처리 필요
 
-        database.execSQL(dbInsert);
+        database.execSQL(studyPlan.toDBInsertString());
         Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
     }
 }

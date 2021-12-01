@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             }
             boolean status = Boolean.parseBoolean(cursor.getString(5));
 
-            study_plan.add(new StudyPlan(id, title, content, startDay, endDay, status));
+            study_plan.add(new StudyPlan(title, content, startDay, endDay, status, id));
 //            Log.e(this.getClass().getName(), startDay.toString() + endDay.toString() + status);
             adapter.notifyDataSetChanged();
 //            Toast.makeText(getApplicationContext(), startDay.toString() + endDay.toString() + status, Toast.LENGTH_SHORT).show();
