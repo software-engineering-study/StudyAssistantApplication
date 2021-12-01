@@ -25,42 +25,37 @@ public class CreateStudyPlan extends AppCompatActivity {
     // 생성할 학습 계획 객체
     public StudyPlan study_plan;
 
-    // #임의로 생성
-    public static int id = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_study_plan);
 
+        TextView tv_startDay = findViewById(R.id.startDay);
+        TextView tv_endDay = findViewById(R.id.endDay);
 
-
-        // 날짜를 출력하는 텍스트뷰에 오늘 날짜 설정.
-
-        TextView startDay = findViewById(R.id.startDay);
-        TextView endDay = findViewById(R.id.endDay);
-
-        Calendar cal = Calendar.getInstance();
-
+//        Calendar cal = Calendar.getInstance();
 //        startDay.setText(cal.get(Calendar.YEAR) +"-"+ (cal.get(Calendar.MONTH)+1) +"-"+ cal.get(Calendar.DATE));
 
-        //https://blog.naver.com/wizand02/221691801438
-        startDay.setOnClickListener(new View.OnClickListener() {
+        //참고 코드 https://blog.naver.com/wizand02/221691801438
+        //시작일
+        tv_startDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnClick_DatePick(view, startDateSetListener);
+                onClickDatePick(view, startDateSetListener);
             }
         });
 
-        endDay.setOnClickListener(new View.OnClickListener(){
+        //종료일
+        tv_endDay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mOnClick_DatePick(view, endDateSetListener);
+                onClickDatePick(view, endDateSetListener);
             }
         });
 
-        FloatingActionButton btn_save = findViewById(R.id.saveButton);
-        btn_save.setOnClickListener(new View.OnClickListener() {
+        //저장 버튼
+        FloatingActionButton fab_save = findViewById(R.id.saveButton);
+        fab_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createStudyPlan();
@@ -70,30 +65,31 @@ public class CreateStudyPlan extends AppCompatActivity {
         });
     }
 
+    //시작일 클릭시 작동
     DatePickerDialog.OnDateSetListener startDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePicker, int yy, int mm, int dd) {
                     // Date Picker에서 선택한 날짜를 TexstartDayiew에 설정
-                    TextView startDay = findViewById(R.id.startDay);
-                    startDay.setText(String.format("%d-%d-%d", yy,mm+1,dd));
-
+                    TextView tv_startDay = findViewById(R.id.startDay);
+                    tv_startDay.setText(String.format("%d-%d-%d", yy,mm+1,dd));
                 }
             };
 
+    //종료일 클릭시 작동
     DatePickerDialog.OnDateSetListener endDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePicker, int yy, int mm, int dd) {
                     // Date Picker에서 선택한 날짜를 TexstartDayiew에 설정
-                    TextView endDay = findViewById(R.id.endDay);
-                    endDay.setText(String.format("%d-%d-%d", yy,mm+1,dd));
-
+                    TextView tv_endDay = findViewById(R.id.endDay);
+                    tv_endDay.setText(String.format("%d-%d-%d", yy,mm+1,dd));
                 }
             };
 
-    public void mOnClick_DatePick(View view, DatePickerDialog.OnDateSetListener listener){
-        // DATE Picker가 처음 떴을 때, 오늘 날짜가 보이도록 설정.
+    //DatePicker 작동
+    public void onClickDatePick(View view, DatePickerDialog.OnDateSetListener listener){
+        // DatePicker가 처음 떴을 때, 오늘 날짜가 보이도록 설정.
         Calendar cal = Calendar.getInstance();
         new DatePickerDialog(this, listener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
     }
@@ -107,50 +103,48 @@ public class CreateStudyPlan extends AppCompatActivity {
      */
     public void createStudyPlan()
     {
-        EditText title, content;
-        TextView startDayTv, endDayTv;
+        EditText et_title, et_content;
+        TextView tv_startDay, tv_endDay;
 
-        title = findViewById(R.id.planTitle);
-        content = findViewById(R.id.planContent);
-        startDayTv = findViewById(R.id.startDay);
-        endDayTv = findViewById(R.id.endDay);
+        et_title = findViewById(R.id.planTitle);
+        et_content = findViewById(R.id.planContent);
+        tv_startDay = findViewById(R.id.startDay);
+        tv_endDay = findViewById(R.id.endDay);
 
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         Date startDay = null;
         Date endDay = null;
         try {
-            startDay = fm.parse(startDayTv.getText().toString());
-            endDay = fm.parse(endDayTv.getText().toString());
+            startDay = fm.parse(tv_startDay.getText().toString());
+            endDay = fm.parse(tv_endDay.getText().toString());
         }catch (ParseException e){
             e.printStackTrace();
             Log.e(this.getClass().getName(), "error");
         }
+        
+        //id는 DB에 삽입시 자동으로 처리되므로 생성자에 사용하지 않음
+        study_plan = new StudyPlan(et_title.getText().toString()
+                , et_content.getText().toString(), startDay, endDay, false);
 
-        StudyPlan studyPlan = new StudyPlan(title.getText().toString()
-                , content.getText().toString(), startDay, endDay, false);
-
-        SQLiteDatabase database;
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
-
-        insertStudyPlanDB(studyPlan);
-
-        Toast.makeText(getApplicationContext(), studyPlan.toDBInsertString(), Toast.LENGTH_LONG).show();
+        insertStudyPlanDB(study_plan);
+        //for test
+        Toast.makeText(getApplicationContext(), study_plan.toDBInsertString(), Toast.LENGTH_LONG).show();
     }
 
     /**
      * 입력받은 StudyPlan 객체의 plan_id를 입력으로
      * 하여 데이터베이스에 작성한 학습 계획 정보를
      * 저장한다.
-     * # 파라미터 변경 () -> (StudyPlan studyPlan)
      */
     public void insertStudyPlanDB(StudyPlan studyPlan)
     {
         SQLiteDatabase database;
 
-        database = openOrCreateDatabase("study_plan_db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
         //예외처리 필요
 
         database.execSQL(studyPlan.toDBInsertString());
+        //for test
         Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
     }
 }
