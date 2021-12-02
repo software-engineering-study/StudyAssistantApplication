@@ -114,14 +114,18 @@ public class CreateStudyPlan extends AppCompatActivity {
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         Date startDay = null;
         Date endDay = null;
+        Date today = null;
+
         try {
             startDay = fm.parse(tv_startDay.getText().toString());
             endDay = fm.parse(tv_endDay.getText().toString());
+            today = fm.parse(fm.format(new Date()));
         }catch (ParseException e){
             e.printStackTrace();
             Log.e(this.getClass().getName(), "error");
         }
 
+        // 학습 제목, 시작, 종료 날짜 입력 여부 검증
         if(et_title.getText().toString().length() == 0){
             Toast.makeText(getApplicationContext(), "제목을 입력해 주세요.", Toast.LENGTH_LONG).show();
             return;
@@ -132,6 +136,20 @@ public class CreateStudyPlan extends AppCompatActivity {
         }
         if(endDay == null){
             Toast.makeText(getApplicationContext(), "종료 날짜를 선택해  주세요.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // 학습 계획을 작성할 때, 지난 날짜에 대한 계획은 작성되지 않는다.
+        if(startDay.before(today) || endDay.before(today)){
+            Toast.makeText(getApplicationContext(), "지난 날짜에 대한 계획은 작성할 수 없습니다.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Notice!
+        // 종료 날짜가 시작 날짜보다 뒤에 있어야 하는 조건이 없음.
+        // 따라서 코드를 다음과 같이 추가 함.
+        if(endDay.before(startDay)){
+            Toast.makeText(getApplicationContext(), "종료 날짜가 시작 날짜보다 앞에 있습니다. 다시 선택해 주세요.", Toast.LENGTH_LONG).show();
             return;
         }
 
