@@ -121,7 +121,20 @@ public class CreateStudyPlan extends AppCompatActivity {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "error");
         }
-        
+
+        if(et_title.getText().toString().length() == 0){
+            Toast.makeText(getApplicationContext(), "제목을 입력해 주세요.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(startDay == null){
+            Toast.makeText(getApplicationContext(), "시작 날짜를 선택해 주세요.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(endDay == null){
+            Toast.makeText(getApplicationContext(), "종료 날짜를 선택해  주세요.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         //id는 DB에 삽입시 자동으로 처리되므로 생성자에 사용하지 않음
         study_plan = new StudyPlan(et_title.getText().toString()
                 , et_content.getText().toString(), startDay, endDay, false);
