@@ -1,8 +1,10 @@
 package com.se.studyassistantapplication;
 
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -57,9 +59,30 @@ public class OpenStudyPlan extends AppCompatActivity {
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteStudyPlanDB(study_plan);
-                setResult(RESULT_OK, new Intent());
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(OpenStudyPlan.this);
+                builder.setTitle("안내");
+                builder.setMessage("삭제 하시겠습니까?");
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteStudyPlanDB(study_plan);
+                        Toast.makeText(getApplicationContext(), "삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK, new Intent());
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "취소 되었습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }
