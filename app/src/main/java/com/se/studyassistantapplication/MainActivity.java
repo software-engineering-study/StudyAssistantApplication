@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
                 + ", status BOOLEAN"
                 + ")");
         
+        //캘린더에 선택된 날짜로 초기화
+        selected_date = new Date(cv_calendarView.getDate());
+        // for test
+        Toast.makeText(this, selected_date.toString(), Toast.LENGTH_SHORT);
+        
         // 캘린더에서 날짜 변경시
         cv_calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
