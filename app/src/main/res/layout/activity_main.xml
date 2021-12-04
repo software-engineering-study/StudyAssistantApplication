@@ -17,13 +17,16 @@
         app:layout_constraintTop_toBottomOf="@+id/calendarView"
         app:layout_constraintVertical_bias="0" />
 
-    <CalendarView
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
         android:id="@+id/calendarView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:selectorColor="@android:color/holo_red_dark"
+        app:textColorNormal="@color/purple_200"
+        app:textColorSelected="@color/purple_200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"  />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/newPlan"
