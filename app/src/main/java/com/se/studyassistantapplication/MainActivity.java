@@ -25,6 +25,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+
 /**
  * Main 클래스는 학습 계획 목록과 학습 캘린더를 보여주는 기능을 수행하고 사용자가 선택한
  * 학습 계획 정보를 StudyPlan 클래스로 전달하는 역할을 한다.
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CalendarView cv_calendarView = findViewById(R.id.calendarView);
+        // CalendarView cv_calendarView = findViewById(R.id.calendarView);
+        showCalendar();
         ListView lv_listView = findViewById(R.id.planList);
         FloatingActionButton fab_newPlan = findViewById(R.id.newPlan);
 
@@ -78,15 +82,20 @@ public class MainActivity extends AppCompatActivity {
                 + ", end_day DATE"
                 + ", status BOOLEAN"
                 + ")");
-
+        
+        //캘린더에 선택된 날짜로 초기화
+        // selected_date = new Date(cv_calendarView.getDate());
+        // for test
+        // Toast.makeText(this, selected_date.toString(), Toast.LENGTH_SHORT);
+        
         // 캘린더에서 날짜 변경시
-        cv_calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                selectDate(year, month, day);
-                showStudyPlanList(selected_date);
-            }
-        });
+        // cv_calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        //  @Override
+        //  public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
+        //      selectDate(year, month, day);
+        //      showStudyPlanList(selected_date);
+        //  }
+        // });
 
         study_plan = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, study_plan);
@@ -139,7 +148,37 @@ public class MainActivity extends AppCompatActivity {
      */
     public void showCalendar()
     {
+        /* starts before 1 year from now */
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.YEAR, -1);
 
+        /* ends after 1 year from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.YEAR, 1);
+
+        // on below line we are setting up our horizontal calendar view and passing id our calendar view to it.
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
+                // on below line we are adding a range
+                // as start date and end date to our calendar.
+                .range(startDate, endDate)
+                // on below line we are providing a number of dates
+                // which will be visible on the screen at a time.
+                .datesNumberOnScreen(7)
+                // at last we are calling a build method
+                // to build our horizontal recycler view.
+                .build();
+
+        // on below line we are setting calendar listener to our calendar view.
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+                // on below line we are printing date
+                // in the logcat which is selected.
+                selected_date = date.getTime();
+                showStudyPlanList(selected_date);
+                Log.e("TAG", "CURRENT DATE IS " + date);
+            }
+        });
     }
 
     /**
