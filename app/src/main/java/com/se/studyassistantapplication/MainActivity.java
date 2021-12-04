@@ -120,6 +120,13 @@ public class MainActivity extends AppCompatActivity {
                 clickCreateStudyPlan();
             }
         });
+
+        // 앱이 시작되면, 오늘 날짜를 기준으로 학습 계획 보여주기
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy MM dd");
+        String[] today = fm.format(new Date()).split(" ");
+
+        selectDate(Integer.parseInt(today[0]), Integer.parseInt(today[1]) - 1, Integer.parseInt(today[2]));
+        showStudyPlanList(selected_date);
     }
 
     // CalculateActivity 에서 처리된 결과를 받는 메소드
