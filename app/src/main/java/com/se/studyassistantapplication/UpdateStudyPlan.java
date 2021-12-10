@@ -1,8 +1,10 @@
 package com.se.studyassistantapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -72,9 +74,24 @@ public class UpdateStudyPlan extends AppCompatActivity {
         fab_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateStudyPlan();
-                setResult(RESULT_OK, new Intent());
-                finish();
+                if(et_title.getText().toString().equals("") || tv_startDay.getText().toString() == "시작일" || tv_endDay.getText().toString() == "종료일") {
+                    AlertDialog.Builder ad = new AlertDialog.Builder(UpdateStudyPlan.this);
+                    ad.setIcon(R.mipmap.ic_launcher);
+                    ad.setTitle("Error");
+                    ad.setMessage("정보를 입력해 주세요");
+
+                    ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    ad.show();
+                } else {
+                    updateStudyPlan();
+                    setResult(RESULT_OK, new Intent());
+                    finish();
+                }
             }
         });
     }
@@ -125,12 +142,19 @@ public class UpdateStudyPlan extends AppCompatActivity {
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         Date startDay = null;
         Date endDay = null;
+        Date today = null;
         try {
             startDay = fm.parse(startDayTv.getText().toString());
             endDay = fm.parse(endDayTv.getText().toString());
+            today = fm.parse(fm.format(new Date()));
         }catch (ParseException e){
             e.printStackTrace();
             Log.e(this.getClass().getName(), "error");
+        }
+
+        if(endDay.before(startDay)){
+            Toast.makeText(getApplicationContext(), "종료 날짜가 시작 날짜보다 앞에 있습니다. 다시 선택해 주세요.", Toast.LENGTH_LONG).show();
+            return;
         }
 
         StudyPlan updatedStudyPlan = new StudyPlan(title.getText().toString()
