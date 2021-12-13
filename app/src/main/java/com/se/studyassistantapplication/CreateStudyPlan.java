@@ -163,8 +163,6 @@ public class CreateStudyPlan extends AppCompatActivity {
                 , et_content.getText().toString(), startDay, endDay, false);
 
         insertStudyPlanDB(study_plan);
-        //for test
-        Toast.makeText(getApplicationContext(), study_plan.toDBInsertString(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -180,7 +178,5 @@ public class CreateStudyPlan extends AppCompatActivity {
         //예외처리 필요
 
         database.execSQL(studyPlan.toDBInsertString());
-        //for test
-        Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
     }
 }
