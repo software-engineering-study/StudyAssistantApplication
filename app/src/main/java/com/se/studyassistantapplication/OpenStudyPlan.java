@@ -130,8 +130,6 @@ public class OpenStudyPlan extends AppCompatActivity {
         if(resultCode == RESULT_OK){
             setResult(RESULT_OK, new Intent());
             finish();
-            // for test
-            Toast.makeText(getApplicationContext(), "onAcitivyResult called", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,10 +203,8 @@ public class OpenStudyPlan extends AppCompatActivity {
         Button btn_status = findViewById(R.id.statusBtn);
         if(btn_status.getText().equals("미완료")){
             btn_status.setText("완료");
-            Toast.makeText(getApplicationContext(), "to true", Toast.LENGTH_SHORT).show();
         }else{
             btn_status.setText("미완료");
-            Toast.makeText(getApplicationContext(), "to false", Toast.LENGTH_SHORT).show();
         }
     }
 
