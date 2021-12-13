@@ -106,10 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 StudyPlan studyPlan = adapter.getItem(i);
-
-                Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
-                intent.putExtra("StudyPlan", studyPlan);
-                startActivityForResult(intent, REQUEST_CODE_OPENSTUDYPLAN);
+                selectStudyPlan(studyPlan);
             }
         });
 
@@ -273,20 +270,17 @@ public class MainActivity extends AppCompatActivity {
         return cursor;
     }
 
-//    /**
-//     * 사용자가 학습 계획 목록에서 학습 계획 선
-//     * 택시에 학습 계획 목록에서 보여지는 정보(학
-//     * 습 계획 제목, 시작 날짜, 종료 날짜)를 통해
-//     * showStudyPlan 메소드를 호출하여 학습 계
-//     * 획 열람 기능을 실행한다.
-//     * @param title 학습 계획 제목
-//     * @param startday 시작 날짜
-//     * @param endday 종료 날짜
-//     * @param id ID
-//     * @return 학습 계획 열람 기능 실행???
-//     */
-//    public StudyPlan selectStudyPlan(String title, Date startday, Date endday, int id)
-//    {
-//
-//    }
+    /**
+     * 사용자가 학습 계획 목록에서 학습 계획 선
+     * 택시에 학습 계획 목록에서 보여지는 정보(학
+     * 습 계획 제목, 시작 날짜, 종료 날짜)를 통해
+     * showStudyPlan 메소드를 호출하여 학습 계
+     * 획 열람 기능을 실행한다.
+     */
+    public void selectStudyPlan(StudyPlan studyPlan)
+    {
+        Intent intent = new Intent(getApplicationContext(), OpenStudyPlan.class);
+        intent.putExtra("StudyPlan", studyPlan);
+        startActivityForResult(intent, REQUEST_CODE_OPENSTUDYPLAN);
+    }
 }
