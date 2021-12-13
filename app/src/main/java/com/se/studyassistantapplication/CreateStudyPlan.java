@@ -1,8 +1,10 @@
 package com.se.studyassistantapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -32,7 +34,9 @@ public class CreateStudyPlan extends AppCompatActivity {
 
         TextView tv_startDay = findViewById(R.id.startDay);
         TextView tv_endDay = findViewById(R.id.endDay);
+        EditText et_title;
 
+        et_title = findViewById(R.id.planTitle);
 //        Calendar cal = Calendar.getInstance();
 //        startDay.setText(cal.get(Calendar.YEAR) +"-"+ (cal.get(Calendar.MONTH)+1) +"-"+ cal.get(Calendar.DATE));
 
@@ -58,9 +62,24 @@ public class CreateStudyPlan extends AppCompatActivity {
         fab_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createStudyPlan();
-                setResult(RESULT_OK, new Intent());
-                finish();
+                if(et_title.getText().toString().equals("") || tv_startDay.getText().toString() == "시작일" || tv_endDay.getText().toString() == "종료일") {
+                    AlertDialog.Builder ad = new AlertDialog.Builder(CreateStudyPlan.this);
+                    ad.setIcon(R.mipmap.ic_launcher);
+                    ad.setTitle("Error");
+                    ad.setMessage("정보를 입력해 주세요");
+
+                    ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    ad.show();
+                } else {
+                    createStudyPlan();
+                    setResult(RESULT_OK, new Intent());
+                    finish();
+                }
             }
         });
     }
@@ -123,20 +142,6 @@ public class CreateStudyPlan extends AppCompatActivity {
         }catch (ParseException e){
             e.printStackTrace();
             Log.e(this.getClass().getName(), "error");
-        }
-
-        // 학습 제목, 시작, 종료 날짜 입력 여부 검증
-        if(et_title.getText().toString().length() == 0){
-            Toast.makeText(getApplicationContext(), "제목을 입력해 주세요.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(startDay == null){
-            Toast.makeText(getApplicationContext(), "시작 날짜를 선택해 주세요.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if(endDay == null){
-            Toast.makeText(getApplicationContext(), "종료 날짜를 선택해  주세요.", Toast.LENGTH_LONG).show();
-            return;
         }
 
         // 학습 계획을 작성할 때, 지난 날짜에 대한 계획은 작성되지 않는다.

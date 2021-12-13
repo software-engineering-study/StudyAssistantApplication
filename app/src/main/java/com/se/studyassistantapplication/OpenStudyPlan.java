@@ -11,9 +11,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,6 +31,12 @@ public class OpenStudyPlan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_study_plan);
 
+        // 상태 버튼 사용시 날짜 비교를 위한 객체
+        TextView tv_startDay, tv_endDay;
+
+        tv_startDay = findViewById(R.id.startDay);
+        tv_endDay = findViewById(R.id.endDay);
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         study_plan = bundle.getParcelable("StudyPlan");
@@ -40,8 +48,36 @@ public class OpenStudyPlan extends AppCompatActivity {
         btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setStudyPlanStatus();
-                updatePlanStatusDB(study_plan);
+                SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+
+                Date startDay = null;
+                Date endDay = null;
+                Date today = null;
+
+                try {
+                    startDay = fm.parse(tv_startDay.getText().toString());
+                    endDay = fm.parse(tv_endDay.getText().toString());
+                    today = fm.parse(fm.format(new Date()));
+
+                    if(today.after(endDay)) {
+                        AlertDialog.Builder ad = new AlertDialog.Builder(OpenStudyPlan.this);
+                        ad.setIcon(R.mipmap.ic_launcher);
+                        ad.setTitle("Error");
+                        ad.setMessage("지난 계획의 상태는 변경할 수 없습니다.");
+
+                        ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        ad.show();
+                    } else {
+                        setStudyPlanStatus();
+                        updatePlanStatusDB(study_plan);
+                    }
+
+                }catch (ParseException e) {e.printStackTrace();}
             }
         });
         
@@ -138,7 +174,7 @@ public class OpenStudyPlan extends AppCompatActivity {
         tv_planContent.setText(study_plan.plan_content);
         tv_startDay.setText(fm.format(study_plan.plan_start_day));
         tv_endDay.setText(fm.format(study_plan.plan_end_day));
-        btn_status.setText(study_plan.plan_status ? "TRUE" : "FALSE");
+        btn_status.setText(study_plan.plan_status ? "완료" : "미완료");
     }
 
     /**
@@ -167,11 +203,11 @@ public class OpenStudyPlan extends AppCompatActivity {
     public void setStudyPlanStatus()
     {
         Button btn_status = findViewById(R.id.statusBtn);
-        if(btn_status.getText().equals("FALSE")){
-            btn_status.setText("TRUE");
+        if(btn_status.getText().equals("미완료")){
+            btn_status.setText("완료");
             Toast.makeText(getApplicationContext(), "to true", Toast.LENGTH_SHORT).show();
         }else{
-            btn_status.setText("FALSE");
+            btn_status.setText("미완료");
             Toast.makeText(getApplicationContext(), "to false", Toast.LENGTH_SHORT).show();
         }
     }
@@ -199,7 +235,7 @@ public class OpenStudyPlan extends AppCompatActivity {
         database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
         Button btn_status = findViewById(R.id.statusBtn);
-        if(btn_status.getText().equals("FALSE")){
+        if(btn_status.getText().equals("미완료")){
             //UPDATE study_plan_tb SET status='false' WHERE _id = id
             database.execSQL("UPDATE study_plan_tb SET status='false' WHERE _id = " + studyPlan.plan_id);
         }else{
