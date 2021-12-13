@@ -23,27 +23,21 @@ import java.util.Date;
  * 학습 계획을 열람, 수정, 삭제, 상태변경하는 기능 수행
  */
 public class OpenStudyPlan extends AppCompatActivity {
-    // 열람할 학습 계획 객체
     public StudyPlan study_plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_study_plan);
-
-        // 상태 버튼 사용시 날짜 비교를 위한 객체
         TextView tv_startDay, tv_endDay;
-
         tv_startDay = findViewById(R.id.startDay);
         tv_endDay = findViewById(R.id.endDay);
-
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         study_plan = bundle.getParcelable("StudyPlan");
 
         showStudyPlan();
-        
-        // 상태 버튼
+
         Button btn_status = findViewById(R.id.statusBtn);
         btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +74,7 @@ public class OpenStudyPlan extends AppCompatActivity {
                 }catch (ParseException e) {e.printStackTrace();}
             }
         });
-        
-        // 수정 버튼
+
         Button btn_modify = findViewById(R.id.modifyBtn);
         btn_modify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +82,7 @@ public class OpenStudyPlan extends AppCompatActivity {
                 clickUpdateStudyPlan();
             }
         });
-        
-        // 삭제 버튼
+
         Button btn_delete = findViewById(R.id.deleteBtn);
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,8 +114,7 @@ public class OpenStudyPlan extends AppCompatActivity {
             }
         });
     }
-    
-    // UpdateStudyPlan 액티비티로부터 돌아오는 경우
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -188,7 +179,6 @@ public class OpenStudyPlan extends AppCompatActivity {
         SQLiteDatabase database;
         database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
 
-        //SELECT * FROM study_plan_tb WHERE _id = id
         Cursor cursor = database.rawQuery("SELECT * FROM study_plan_tb WHERE _id = " + studyPlan.plan_id, null);
         return cursor;
     }
@@ -232,10 +222,10 @@ public class OpenStudyPlan extends AppCompatActivity {
 
         Button btn_status = findViewById(R.id.statusBtn);
         if(btn_status.getText().equals("미완료")){
-            //UPDATE study_plan_tb SET status='false' WHERE _id = id
+            Toast.makeText(getApplicationContext(), "정상적으로 변경되었습니다.", Toast.LENGTH_LONG).show();
             database.execSQL("UPDATE study_plan_tb SET status='false' WHERE _id = " + studyPlan.plan_id);
         }else{
-            //UPDATE study_plan_tb SET status='true' WHERE _id = id
+            Toast.makeText(getApplicationContext(), "정상적으로 변경되었습니다.", Toast.LENGTH_LONG).show();
             database.execSQL("UPDATE study_plan_tb SET status='true' WHERE _id = " + studyPlan.plan_id);
         }
     }
@@ -250,8 +240,6 @@ public class OpenStudyPlan extends AppCompatActivity {
     {
         SQLiteDatabase database;
         database = openOrCreateDatabase(MainActivity.DB_NAME, MODE_PRIVATE, null);
-
-        //DELETE FROM study_plan_tb WHERE _id = id
         database.execSQL("DELETE FROM study_plan_tb WHERE _id = " + studyPlan.plan_id);
     }
     
