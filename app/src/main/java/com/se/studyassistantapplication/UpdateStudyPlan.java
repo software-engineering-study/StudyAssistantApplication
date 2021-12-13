@@ -55,14 +55,14 @@ public class UpdateStudyPlan extends AppCompatActivity {
         tv_startDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnClick_DatePick(view, startDateSetListener);
+                onClick_DatePick(view, startDateSetListener);
             }
         });
 
         tv_endDay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mOnClick_DatePick(view, endDateSetListener);
+                onClick_DatePick(view, endDateSetListener);
             }
         });
         fab_save.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +111,7 @@ public class UpdateStudyPlan extends AppCompatActivity {
                 }
             };
 
-    public void mOnClick_DatePick(View view, DatePickerDialog.OnDateSetListener listener){
+    public void onClick_DatePick(View view, DatePickerDialog.OnDateSetListener listener){
         Calendar cal = Calendar.getInstance();
         new DatePickerDialog(this, listener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
     }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -115,10 +116,17 @@ public class StudyPlan implements Parcelable {
 
     public String toString()
     {
-        return "title: " + plan_title + ", "
-                + "content: " + plan_content + "\n,"
-                + "sday: " + plan_start_day + ", "
-                + "eday: " + plan_end_day + ", "
-                + "status: " + plan_status;
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if(plan_status == false) {
+            return plan_title + "\n"
+                    + "시작일: " + format.format(plan_start_day) + "\n"
+                    + "종료일: " + format.format(plan_end_day) + "\n"
+                    + "상태: 미완료";
+        } else {
+            return plan_title + "\n"
+                    + "시작일: " + format.format(plan_start_day) + "\n"
+                    + "종료일: " + format.format(plan_end_day) + "\n"
+                    + "상태: 완료";
+        }
     }
 }
