@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSelected(Calendar date, int position) {
                 selected_date = date.getTime();
                 showStudyPlanList(selected_date);
-                Log.e("TAG", "CURRENT DATE IS " + date);
             }
         });
     }
